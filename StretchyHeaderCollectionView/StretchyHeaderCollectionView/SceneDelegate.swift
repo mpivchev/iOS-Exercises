@@ -21,7 +21,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         window = UIWindow(windowScene: windowScene)
-        let collectionViewController = CollectionViewController(collectionViewLayout: UICollectionViewFlowLayout())
+        let collectionViewController = CollectionViewController(collectionViewLayout: StretchyHeaderFlowLayout())
         window?.rootViewController = collectionViewController        
     }
     

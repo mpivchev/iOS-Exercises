@@ -13,6 +13,7 @@ class CollectionViewController: UICollectionViewController, UICollectionViewDele
     private let cellId = "cell"
     private let headerId = "header"
     private let padding : CGFloat = 16
+    private var headerView: HeaderView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,14 +22,14 @@ class CollectionViewController: UICollectionViewController, UICollectionViewDele
         initCollectionViewLayout()
     }
     
-    fileprivate func initCollectionView() {
+    private func initCollectionView() {
         collectionView.contentInsetAdjustmentBehavior = .never
         collectionView.backgroundColor = .white
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellId)
         collectionView.register(HeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerId)
     }
     
-    fileprivate func initCollectionViewLayout() {
+    private func initCollectionViewLayout() {
         if let layout = collectionViewLayout as? UICollectionViewFlowLayout {
             layout.sectionInset = .init(top: padding, left: padding, bottom: padding, right: padding)
         }
@@ -49,12 +50,23 @@ class CollectionViewController: UICollectionViewController, UICollectionViewDele
     }
     
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath)
-        return header
+        headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath) as? HeaderView
+        return headerView!
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         .init(width: view.frame.width, height: 340)
+    }
+    
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let contentOffsetY = scrollView.contentOffset.y
+        
+        if (contentOffsetY > 0) {
+            headerView?.blurAnimator.fractionComplete = 0
+            return
+        }
+        
+        headerView?.blurAnimator.fractionComplete = abs(contentOffsetY) / 100
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {

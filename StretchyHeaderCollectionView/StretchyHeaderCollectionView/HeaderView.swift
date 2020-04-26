@@ -9,8 +9,10 @@
 import UIKit
 
 class HeaderView: UICollectionReusableView {
+    var blurAnimator: UIViewPropertyAnimator!
+    
     let imageView : UIImageView = {
-        let iv = UIImageView(image: #imageLiteral(resourceName: "RRUe0Mo"))
+        let iv = UIImageView(image: #imageLiteral(resourceName: "958580"))
         iv.contentMode = .scaleAspectFill
         return iv
     }()
@@ -21,6 +23,21 @@ class HeaderView: UICollectionReusableView {
         
         addSubview(imageView)
         imageView.fillSuperview()
+        
+        initBlur()
+    }
+    
+    private func initBlur() {
+        let blurEffect = UIBlurEffect(style: .regular)
+        let visualEffectView = UIVisualEffectView(effect: nil)
+        self.addSubview(visualEffectView)
+        visualEffectView.fillSuperview()
+        
+        blurAnimator = UIViewPropertyAnimator(duration: 0, curve: .linear, animations: {
+            visualEffectView.effect = blurEffect
+        })
+        
+        blurAnimator.pausesOnCompletion = true // enables the effect to remain active after app goes in the background
     }
     
     required init?(coder: NSCoder) {
