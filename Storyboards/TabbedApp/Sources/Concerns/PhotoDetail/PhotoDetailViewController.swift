@@ -10,10 +10,8 @@ import UIKit
 import Kingfisher
 
 class PhotoDetailViewController: UIViewController {
-    @IBOutlet weak var photoImage: UIImageView!
-    @IBOutlet weak var photoTitle: UILabel!
-    @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var tableView: UITableView!
+    private var headerView: HeaderView?
     
     var photo : PhotoElement? = nil
     
@@ -25,8 +23,7 @@ class PhotoDetailViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         
-        photoImage.kf.setImage(with: URL(string: photo!.url))
-        photoTitle.text = photo?.title
+        initHeader()
         
         Api.getComments() { comments, error in
             if let comments = comments {
@@ -40,6 +37,18 @@ class PhotoDetailViewController: UIViewController {
                 }, completion: nil)
             }
         }
+    }
+    
+    private func initHeader() {
+        tableView.register(HeaderView.self, forHeaderFooterViewReuseIdentifier: "sectionHeader")
+        
+        let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "sectionHeader") as! HeaderView
+        tableView.tableHeaderView = headerView
+        
+        headerView.translatesAutoresizingMaskIntoConstraints = false
+        headerView.heightAnchor.constraint(equalToConstant: 300).isActive = true
+        headerView.widthAnchor.constraint(equalTo: tableView.widthAnchor).isActive = true
+        headerView.layoutIfNeeded()
     }
 }
 
@@ -56,10 +65,36 @@ extension PhotoDetailViewController : UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "commentCell", for: indexPath)
-                let comment = comments[indexPath.row]
+        let comment = comments[indexPath.row]
         
         cell.textLabel?.text = comment.body
         
         return cell
     }
+    
+    //        // Create a standard header that includes the returned text.
+    //        func tableView(_ tableView: UITableView, titleForHeaderInSection
+    //                                    section: Int) -> String? {
+    //           return "Header \(section)"
+    //        }
+    //
+    //        // Create a standard footer that includes the returned text.
+    //        func tableView(_ tableView: UITableView, titleForFooterInSection
+    //                                    section: Int) -> String? {
+    //           return "Footer \(section)"
+    //        }
+    //
+    //        func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    //            .init(340)
+    //        }
+    //
+    //    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    //        let view = tableView.dequeueReusableHeaderFooterView(withIdentifier:
+    //                    "sectionHeader") as! HeaderView
+    //        view.title.text = sections[section]
+    //        view.image.image = UIImage(named: sectionImages[section])
+    //
+    //        return view
+    //    }
+    
 }
