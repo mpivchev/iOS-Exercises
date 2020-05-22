@@ -8,51 +8,40 @@
 import UIKit
 import SnapKit
 
-class HomeViewController: UINavigationController {
+class HomeViewController: UIViewController {
     private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
     private let cellReuseIdentifier = "HomeCell"
+    private let mlModels = [MLModel(title: "Image classification", image: #imageLiteral(resourceName: "ImageClassification") ), MLModel(title: "Object Detection", image: #imageLiteral(resourceName: "ObjectDetection")), MLModel(title: "Text Scanning", image: #imageLiteral(resourceName: "TextDetection")), MLModel(title: "Pose Estimation", image: #imageLiteral(resourceName: "PoseEstimation") )]
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupNavigationToolbar()
-        setupCollectionView()
+        setupContent()
     }
     
     private func setupNavigationToolbar() {
-        let navigationBarAppearance = UINavigationBar.appearance()
-        navigationBarAppearance.prefersLargeTitles = true
-        navigationBarAppearance.isTranslucent = true
-//        navigationBarAppearance.backgroundColor = .white
-//        navigationBarAppearance.tintColor = .white
-//        navigationBarAppearance.barTintColor = .white
-//        navigationBarAppearance.alpha = 0.5
-        edgesForExtendedLayout = [.all]
-        extendedLayoutIncludesOpaqueBars = true
-        
         self.title = "Machine Learning Predictor"
     }
     
-    private func setupCollectionView() {
-        let cellSize = (view.frame.size.width - 20) / 3
+    private func setupContent() {
         let layout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
+        layout.sectionInset = .init(top: 0, left: 16, bottom: 0, right: 16)
+        let cellSize = (view.frame.size.width - (layout.minimumLineSpacing + layout.minimumInteritemSpacing) - layout.sectionInset.left - layout.sectionInset.right) / 2
         layout.itemSize = .init(width: cellSize, height: cellSize)
         
         collectionView.backgroundColor = .white
-//        collectionView.delegate = self
         collectionView.dataSource = self
         
         collectionView.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: cellReuseIdentifier)
         
         view.addSubview(collectionView)
         collectionView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
+            make.top.equalTo(view.snp.top)
             make.left.right.equalToSuperview()
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
             
-
-//            make.edges.equalToSuperview().inset(60)
             make.height.equalToSuperview()
             make.width.equalToSuperview()
         }
@@ -61,11 +50,15 @@ class HomeViewController: UINavigationController {
 
 extension HomeViewController : UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 40
+        return mlModels.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellReuseIdentifier, for: indexPath) as! HomeCollectionViewCell
+        let mlModel = mlModels[indexPath.row]
+        
+        cell.title.text = mlModel.title
+        cell.image.image = mlModel.image
         
         return cell
     }
