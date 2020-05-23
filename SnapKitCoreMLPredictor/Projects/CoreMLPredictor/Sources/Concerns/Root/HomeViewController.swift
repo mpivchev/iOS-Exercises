@@ -17,33 +17,46 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupNavigationToolbar()
-        setupContent()
+        view.backgroundColor = .white
+        
+        setupNavigationBar()
+        setupCollectionView()
     }
     
-    private func setupNavigationToolbar() {
+    private func setupNavigationBar() {
         self.title = "Machine Learning Predictor"
     }
     
-    private func setupContent() {
+    private func setupCollectionView() {
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: cellReuseIdentifier)
+        view.addSubview(collectionView)
+        
         let layout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
-        layout.sectionInset = .init(top: 0, left: 16, bottom: 0, right: 16)
+        layout.sectionInset = .init(top: 16, left: 16, bottom: 16, right: 16)
         let cellSize = (view.frame.size.width - (layout.minimumLineSpacing + layout.minimumInteritemSpacing) - layout.sectionInset.left - layout.sectionInset.right) / 2
         layout.itemSize = .init(width: cellSize, height: cellSize)
         
         collectionView.backgroundColor = .white
-        collectionView.dataSource = self
         
-        collectionView.register(HomeCollectionViewCell.self, forCellWithReuseIdentifier: cellReuseIdentifier)
-        
-        view.addSubview(collectionView)
         collectionView.snp.makeConstraints { make in
             make.top.equalTo(view.snp.top)
             make.left.right.equalToSuperview()
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom)
-            
             make.height.equalToSuperview()
             make.width.equalToSuperview()
+        }
+    }
+}
+
+extension HomeViewController : UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        switch indexPath.row {
+        case 0:
+            navigationController?.pushViewController(ImageClassificationViewController(), animated: true)
+        default:
+            fatalError()
         }
     }
 }

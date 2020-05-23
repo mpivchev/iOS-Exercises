@@ -24,7 +24,6 @@ class HomeCollectionViewCell: UICollectionViewCell {
         title.textColor = .black
 
         title.snp.makeConstraints { make in
-//            make.top.equalTo(image.snp.bottom)
             make.height.equalTo(20)
             make.bottom.equalToSuperview()
             make.centerX.equalToSuperview()
@@ -34,6 +33,7 @@ class HomeCollectionViewCell: UICollectionViewCell {
         contentView.addSubview(image)
         image.contentMode = .scaleAspectFill
         image.clipsToBounds = true
+        image.layer.cornerRadius = 8
         
         image.snp.makeConstraints { make in
             make.left.top.right.equalToSuperview()
