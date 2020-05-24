@@ -7,12 +7,17 @@
 
 import UIKit
 import SnapKit
+import VisualEffectView
+import Vision
+import CoreML
 
 class ImageClassificationViewController: UIViewController {
     let imagePicker = UIImagePickerController()
     
     let imageView = UIImageView()
-    let noImageDescription = UILabel()
+    let addImageDescription = UILabel()
+    let floatingPanel = UIView()
+    let infoLabel = UILabel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,9 +34,7 @@ class ImageClassificationViewController: UIViewController {
     
     private func setupNavigationBar() {
         self.title = "Image Classification"
-        let button = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addImage))
-        button.title = "WOW"
-        navigationItem.rightBarButtonItem = button
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addImage))
     }
     
     private func setupContent() {
@@ -41,14 +44,45 @@ class ImageClassificationViewController: UIViewController {
             make.edges.equalToSuperview()
         }
         
-        // No image description
-        view.addSubview(noImageDescription)
-        noImageDescription.text = "Press the + button to add an image for classification."
-//        noImageDescription.numberOfLines = 0
-        noImageDescription.snp.makeConstraints { make in
-//            make.left.equalToSuperview().offset(16)
-//            make.right.equalToSuperview().offset(16)
-            
+        // Add image description
+        view.addSubview(addImageDescription)
+        addImageDescription.text = "Press the + button to add an image for classification."
+        addImageDescription.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
+        
+        // Floating panel
+        view.addSubview(floatingPanel)
+        floatingPanel.backgroundColor = .clear
+        floatingPanel.isHidden = true
+        floatingPanel.clipsToBounds = true
+        floatingPanel.layer.cornerRadius = 8
+        
+        floatingPanel.snp.makeConstraints{ make in
+            make.bottom.right.equalToSuperview().inset(32)
+//            make.center.equalToSuperview()
+            make.height.equalTo(100)
+            make.width.equalTo(200)
+        }
+        
+        
+        let blurView = VisualEffectView()
+        blurView.colorTint = .darkGray
+        blurView.colorTintAlpha = 0.2
+        blurView.blurRadius = 10
+        blurView.scale = 1
+        
+        floatingPanel.insertSubview(blurView, at: 0)
+        
+        blurView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        // Info label
+        floatingPanel.addSubview(infoLabel)
+        infoLabel.text = "Test"
+        infoLabel.snp.makeConstraints { make in
+            make.edges.equalToSuperview().inset(16)
             make.center.equalToSuperview()
         }
     }
@@ -66,14 +100,14 @@ extension ImageClassificationViewController : UIImagePickerControllerDelegate, U
         if let pickedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
             imageView.contentMode = .scaleAspectFit
             imageView.image = pickedImage
-            noImageDescription.isHidden = true
+            addImageDescription.isHidden = true
+            floatingPanel.isHidden = false
         }
         
         dismiss(animated: true, completion: nil)
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        print("YIKES")
         dismiss(animated: true, completion: nil)
     }
 }
