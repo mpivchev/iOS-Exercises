@@ -12,7 +12,7 @@ class HomeViewController: UIViewController {
     private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
     private let cellReuseIdentifier = "HomeCell"
-    private let mlModels = [MLModel(title: "Image classification", image: #imageLiteral(resourceName: "ImageClassification") ), MLModel(title: "Object Detection", image: #imageLiteral(resourceName: "ObjectDetection")), MLModel(title: "Text Scanning", image: #imageLiteral(resourceName: "TextDetection")), MLModel(title: "Pose Estimation", image: #imageLiteral(resourceName: "PoseEstimation") )]
+    private let mlModels = [MLModelEntry(title: "Image classification", image: #imageLiteral(resourceName: "ImageClassification") ), MLModelEntry(title: "Object Detection", image: #imageLiteral(resourceName: "ObjectDetection")), MLModelEntry(title: "Text Scanning", image: #imageLiteral(resourceName: "TextDetection")), MLModelEntry(title: "Pose Estimation", image: #imageLiteral(resourceName: "PoseEstimation") )]
     
     override func viewDidLoad() {
         super.viewDidLoad()
